@@ -1,0 +1,53 @@
+services:
+  meilisearch:
+    image: getmeili/meilisearch:v1.15
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+      MEILI_MASTER_KEY: local-dev-key-change-me
+    volumes:
+      - meili_data:/meili_data
+    restart: unless-stopped
+
+  crawler:
+    build: ./crawler
+    environment:
+      MEILI_URL: http://meilisearch:7700
+      MEILI_KEY: local-dev-key-change-me
+      SEEDS: https://example.com/
+      MAX_PAGES: "200"
+      MAX_DEPTH: "3"
+      CRAWL_DELAY: "0.5"
+      MAX_DOC_CHARS: "120000"
+    depends_on:
+      - meilisearch
+    restart: "no"
+
+  searxng:
+    image: ghcr.io/searxng/searxng:latest
+    volumes:
+      - ./searxng/settings.yml:/etc/searxng/settings.yml:ro
+      - searxng_data:/var/cache/searxng
+    restart: unless-stopped
+
+  api:
+    build: ./api
+    environment:
+      MEILI_URL: http://meilisearch:7700
+      MEILI_KEY: local-dev-key-change-me
+      SEARXNG_URL: http://searxng:8080
+    depends_on:
+      - meilisearch
+      - searxng
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    depends_on:
+      - api
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:80"
+
+volumes:
+  meili_data:
+  searxng_data:

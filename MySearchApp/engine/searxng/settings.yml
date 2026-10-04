@@ -1,0 +1,28 @@
+# Local-only SearXNG configuration used by My Search.
+# SearXNG supplies broad web/metasearch results; Meilisearch remains your own index.
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "My Search Web"
+
+categories_as_tabs:
+  general:
+  images:
+  videos:
+  news:
+
+search:
+  safe_search: 0
+  autocomplete: duckduckgo
+  formats:
+    - html
+    - json
+
+server:
+  bind_address: "0.0.0.0"
+  port: 8080
+  limiter: false
+  public_instance: false
+  image_proxy: false
+  secret_key: "my-search-local-dev-secret-change-me"

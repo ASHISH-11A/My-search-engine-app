@@ -1,0 +1,48 @@
+{
+  "name": "my-search-desktop",
+  "version": "1.0.0",
+  "description": "My Search - local index plus SearXNG web search",
+  "main": "main.js",
+  "author": "My Search",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable nsis"
+  },
+  "devDependencies": {
+    "electron": "^38.2.1",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.mysearch.desktop",
+    "productName": "My Search",
+    "asar": true,
+    "files": [
+      "main.js",
+      "preload.js",
+      "launcher.html",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "engine",
+        "to": "engine"
+      }
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "artifactName": "My-Search-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "My Search"
+    }
+  }
+}

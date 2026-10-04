@@ -1,0 +1,20 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>My Search</title>
+<style>
+body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:#111827;color:#f3f4f6;height:100vh;display:flex;align-items:center;justify-content:center}
+.card{width:min(820px,90vw);background:#1f2937;border:1px solid #374151;border-radius:18px;padding:36px;box-shadow:0 20px 60px #0006}
+h1{margin:0 0 8px;font-size:36px}.sub{color:#9ca3af;margin-bottom:28px}.status{background:#111827;border-radius:12px;padding:16px;margin:16px 0;color:#d1d5db;min-height:24px}
+button{border:0;border-radius:10px;padding:12px 18px;margin-right:10px;font-weight:600;cursor:pointer}.primary{background:#f3f4f6;color:#111827}.secondary{background:#374151;color:#fff}.danger{background:#7f1d1d;color:#fff}
+pre{height:180px;overflow:auto;background:#0b1220;padding:14px;border-radius:10px;color:#9ca3af;font-size:12px}.small{font-size:13px;color:#9ca3af;line-height:1.5}
+</style></head><body><div class="card">
+<h1>My Search</h1><div class="sub">Local index + SearXNG web search</div>
+<div class="status" id="status">Ready to start.</div>
+<div><button class="primary" id="start">Start Search Engine</button><button class="secondary" id="open" disabled>Open Search</button><button class="danger" id="stop">Stop</button></div>
+<p class="small">The application runs your search engine locally using Docker Desktop. Your own crawled index is kept in Docker volumes, while SearXNG provides broader web results. Docker Desktop must be installed on Windows.</p>
+<pre id="log"></pre>
+</div><script>
+const status=document.getElementById('status'), log=document.getElementById('log'), start=document.getElementById('start'), open=document.getElementById('open');
+window.mySearch.onStatus(v=>status.textContent=v); window.mySearch.onLog(v=>{log.textContent+=(v||'');log.scrollTop=log.scrollHeight;});
+start.onclick=async()=>{start.disabled=true; const r=await window.mySearch.start(); if(r.ok){open.disabled=false;status.textContent=`Search engine ready on http://127.0.0.1:${r.port}`;}else{status.textContent=r.error;start.disabled=false;}};
+open.onclick=()=>window.mySearch.openSearch(); document.getElementById('stop').onclick=async()=>{await window.mySearch.stop();open.disabled=true;start.disabled=false;};
+</script></body></html>
